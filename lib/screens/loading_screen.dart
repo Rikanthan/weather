@@ -1,14 +1,19 @@
-import 'dart:convert';
 
-import 'package:flutter/material.dart';
+
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'location.dart';
+import 'package:flutter/material.dart';
+import 'package:weather/screens/location_screen.dart';
 
+import 'location.dart';
+import 'package:weather/services/networking.dart';
+//import 'dart:js';
 
 const Apikey='067ad514cf62f9ba62b5ea5d5ffa57d1';
 
 class LoadingScreen extends StatefulWidget {
+
+
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }
@@ -21,7 +26,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void initState(){
     super.initState();
     getLocation();
-    getData();
+
   }
 
   void getLocation() async
@@ -31,35 +36,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
     await location.getCurrentLocation();
     longitude=location.longitude;
     lattitude=location.latitude;
-    getData();
+
+
+    NetworkHelper networkHelper=NetworkHelper('https://api.openweathermap.org/data/2.5/weather?lat=$lattitude&lon=$longitude&appid=$Apikey&units=metric');
+    var weatherData=await networkHelper.getData();
+
+    Navigator.push(context,MaterialPageRoute(builder: (context){
+      return LocationScreen(locationweather:weatherData);
+    }));
   }
 
 
-  void getData() async
-  {
-    http.Response response=await http.get('https://api.openweathermap.org/data/2.5/weather?lat=$lattitude&lon=$longitude&appid=$Apikey');
 
-    if(response.statusCode==200)
-      {
-        String data=response.body;
-        var decodes=jsonDecode(data);
-
-        double temperature=decodes['main']['temp'];
-        int condition=decodes['weather'][0]['id'];
-        String city=decodes['name'];
-        print(temperature);
-        print(condition);
-       print(city);
-
-      }
-    else{
-      print(response.statusCode);
-    }
-
-
-
-
-  }
 
 
   @override
@@ -67,6 +55,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
 
     return Scaffold(
+      body: Center(
+        child: SpinKitFadingCircle(
+          color: Colors.white,
+          size: 100.0,
+        ),
+      ),
 
     );
   }
