@@ -31,12 +31,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
     await location.getCurrentLocation();
     longitude=location.longitude;
     lattitude=location.latitude;
+    getData();
   }
 
 
   void getData() async
   {
-    http.Response response=await http.get('https://samples.openweathermap.org/data/2.5/weather?lat=$lattitude&lon=$longitude&appid=$Apikey');
+    http.Response response=await http.get('https://api.openweathermap.org/data/2.5/weather?lat=$lattitude&lon=$longitude&appid=$Apikey');
 
     if(response.statusCode==200)
       {
@@ -64,7 +65,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
 
-    getData();
+
     return Scaffold(
 
     );
