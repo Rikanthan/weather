@@ -10,6 +10,7 @@ import 'package:weather/services/networking.dart';
 
 
 const Apikey='067ad514cf62f9ba62b5ea5d5ffa57d1';
+const WeatherDataUrl='https://api.openweathermap.org/data/2.5/weather';
 
 class LoadingScreen extends StatefulWidget {
 
