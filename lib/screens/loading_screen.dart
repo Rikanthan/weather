@@ -3,6 +3,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:weather/services/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/screens/location_screen.dart';
+import 'package:weather/screens/location.dart';
+import 'package:weather/services/networking.dart';
 
 
 
@@ -27,10 +29,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   }
 
-  void getLocation()
+  void getLocation() async
 
   {
-    var weatherData=WeatherModel().getWeatherData();
+    Location location=Location();
+    await location.getCurrentLocation();
+
+
+
+    NetworkHelper networkHelper=NetworkHelper('$WeatherDataUrl?lat=${location.latitude}&lon=${location.longitude}&appid=$Apikey&units=metric');
+    var weatherData=await networkHelper.getData();
+
 
 
     Navigator.push(context,MaterialPageRoute(builder: (context){
